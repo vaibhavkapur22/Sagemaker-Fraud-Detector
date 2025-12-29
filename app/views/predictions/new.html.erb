@@ -1,0 +1,36 @@
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white">
+          <h2 class="mb-0">
+            <i class="bi bi-shield-check me-2"></i>
+            Fraud Detector
+          </h2>
+          <p class="mb-0 opacity-75">Enter details to calculate fraud risk score</p>
+        </div>
+
+        <div class="card-body">
+          <div class="row">
+            <!-- Form Section -->
+            <div class="col-md-7">
+              <%= render "form", prediction: @prediction %>
+            </div>
+
+            <!-- Result Section -->
+            <div class="col-md-5">
+              <%= turbo_frame_tag "prediction_result" do %>
+                <%= render "result", result: @result %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Service Flow Debug Panel -->
+      <%= turbo_frame_tag "service_flow" do %>
+        <%= render "service_flow", result: @result %>
+      <% end %>
+    </div>
+  </div>
+</div>

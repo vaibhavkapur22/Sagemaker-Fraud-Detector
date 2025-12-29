@@ -1,0 +1,84 @@
+<div class="h-100">
+  <% if result.nil? %>
+    <!-- Initial State -->
+    <div class="text-center p-4 bg-light rounded h-100 d-flex flex-column justify-content-center">
+      <i class="bi bi-calculator display-1 text-muted mb-3"></i>
+      <h5 class="text-muted">Waiting for Input</h5>
+      <p class="text-muted mb-0">Fill in the details and click "Calculate Risk Score" to see the fraud prediction.</p>
+    </div>
+
+  <% elsif result[:error] %>
+    <!-- Error State -->
+    <div class="alert alert-danger h-100">
+      <h5 class="alert-heading">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        Prediction Error
+      </h5>
+      <p class="mb-0"><%= result[:error] %></p>
+    </div>
+
+  <% else %>
+    <!-- Result State -->
+    <%
+      score = result[:score]
+      risk_level = result[:risk_level]
+      confidence = result[:confidence]
+
+      color_class = case risk_level
+                    when "low" then "success"
+                    when "medium" then "warning"
+                    when "high" then "danger"
+                    when "critical" then "danger"
+                    else "secondary"
+                    end
+
+      risk_label = case risk_level
+                   when "low" then "Low Risk"
+                   when "medium" then "Medium Risk"
+                   when "high" then "High Risk"
+                   when "critical" then "Critical Risk"
+                   else "Unknown"
+                   end
+    %>
+
+    <div class="card border-<%= color_class %> h-100">
+      <div class="card-header bg-<%= color_class %> <%= 'text-white' unless color_class == 'warning' %>">
+        <h5 class="mb-0">
+          <i class="bi bi-graph-up me-2"></i>
+          Fraud Score Result
+        </h5>
+      </div>
+
+      <div class="card-body text-center">
+        <!-- Score Display -->
+        <div class="display-1 fw-bold text-<%= color_class %> mb-2">
+          <%= (score * 100).round(1) %>%
+        </div>
+
+        <!-- Risk Level Badge -->
+        <span class="badge bg-<%= color_class %> fs-5 mb-3">
+          <%= risk_label %>
+        </span>
+
+        <!-- Progress Bar -->
+        <div class="progress mb-3" style="height: 25px;">
+          <div class="progress-bar bg-<%= color_class %> progress-bar-striped"
+               role="progressbar"
+               style="width: <%= (score * 100).round %>%"
+               aria-valuenow="<%= (score * 100).round %>"
+               aria-valuemin="0"
+               aria-valuemax="100">
+          </div>
+        </div>
+
+        <!-- Score Scale -->
+        <div class="d-flex justify-content-between small text-muted mb-3">
+          <span>0% (Safe)</span>
+          <span>50%</span>
+          <span>100% (Fraud)</span>
+        </div>
+
+      </div>
+    </div>
+  <% end %>
+</div>

@@ -1,0 +1,259 @@
+<div class="card mt-4 border-info">
+  <div class="card-header bg-info text-white">
+    <h5 class="mb-0">
+      <i class="bi bi-diagram-3 me-2"></i>
+      AWS Service Flow
+      <span class="badge bg-light text-info float-end">Proof of Concept</span>
+    </h5>
+  </div>
+  <div class="card-body">
+    <% if result.nil? %>
+      <!-- Initial State - Show Architecture -->
+      <div class="text-center text-muted py-3">
+        <p class="mb-3">Submit a prediction to see the real-time service flow</p>
+      </div>
+
+      <!-- Architecture Diagram -->
+      <div class="row g-2 text-center">
+        <div class="col">
+          <div class="p-2 border rounded bg-light">
+            <i class="bi bi-browser display-6 text-primary"></i>
+            <div class="mt-1 fw-bold" style="font-size: 0.85em;">Client</div>
+          </div>
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <i class="bi bi-arrow-right text-muted"></i>
+        </div>
+        <div class="col">
+          <div class="p-2 border rounded" style="background-color: #ff9900; color: white;">
+            <i class="bi bi-cloud display-6"></i>
+            <div class="mt-1 fw-bold" style="font-size: 0.85em;">App Runner</div>
+          </div>
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <i class="bi bi-arrow-right text-muted"></i>
+        </div>
+        <div class="col">
+          <div class="p-2 border rounded" style="background-color: #1a73e8; color: white;">
+            <i class="bi bi-server display-6"></i>
+            <div class="mt-1 fw-bold" style="font-size: 0.85em;">RDS</div>
+          </div>
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <i class="bi bi-arrow-right text-muted"></i>
+        </div>
+        <div class="col">
+          <div class="p-2 border rounded" style="background-color: #dc3545; color: white;">
+            <i class="bi bi-database display-6"></i>
+            <div class="mt-1 fw-bold" style="font-size: 0.85em;">ElastiCache</div>
+          </div>
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <i class="bi bi-arrow-right text-muted"></i>
+        </div>
+        <div class="col">
+          <div class="p-2 border rounded" style="background-color: #7b42bc; color: white;">
+            <i class="bi bi-box display-6"></i>
+            <div class="mt-1 fw-bold" style="font-size: 0.85em;">Feature Store</div>
+          </div>
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <i class="bi bi-arrow-right text-muted"></i>
+        </div>
+        <div class="col">
+          <div class="p-2 border rounded" style="background-color: #198754; color: white;">
+            <i class="bi bi-cpu display-6"></i>
+            <div class="mt-1 fw-bold" style="font-size: 0.85em;">SageMaker</div>
+          </div>
+        </div>
+      </div>
+
+    <% elsif result[:debug] %>
+      <% debug = result[:debug] %>
+
+      <!-- Timing Summary -->
+      <div class="alert alert-success py-2 mb-3">
+        <div class="d-flex justify-content-between align-items-center">
+          <span>
+            <i class="bi bi-lightning-charge me-2"></i>
+            <strong>Total Response Time:</strong> <%= debug[:timings][:total_ms] %>ms
+          </span>
+          <span class="badge bg-success">
+            <i class="bi bi-check-circle me-1"></i>
+            All Services Healthy
+          </span>
+        </div>
+      </div>
+
+      <!-- Service Flow Steps -->
+      <div class="row g-2">
+        <!-- Step 1: Client Request -->
+        <div class="col">
+          <div class="card h-100 border-primary">
+            <div class="card-body text-center p-2">
+              <div class="mb-1">
+                <span class="badge bg-primary rounded-pill">1</span>
+              </div>
+              <i class="bi bi-browser display-6 text-primary"></i>
+              <h6 class="mt-1 mb-0" style="font-size: 0.85em;">Client</h6>
+              <small class="text-muted d-block" style="font-size: 0.7em;">Web UI</small>
+              <hr class="my-1">
+              <small class="text-success" style="font-size: 0.7em;">
+                <i class="bi bi-check-circle"></i> OK
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: RDS PostgreSQL -->
+        <div class="col">
+          <div class="card h-100 border-primary">
+            <div class="card-body text-center p-2">
+              <div class="mb-1">
+                <span class="badge bg-primary rounded-pill">2</span>
+              </div>
+              <i class="bi bi-server display-6 text-primary"></i>
+              <h6 class="mt-1 mb-0" style="font-size: 0.85em;">RDS PostgreSQL</h6>
+              <small class="text-muted d-block" style="font-size: 0.7em;">Transactions</small>
+              <hr class="my-1">
+              <small class="text-success" style="font-size: 0.7em;">
+                <i class="bi bi-check-circle"></i> Connected
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: ElastiCache Redis -->
+        <div class="col">
+          <div class="card h-100 border-danger">
+            <div class="card-body text-center p-2">
+              <div class="mb-1">
+                <span class="badge bg-danger rounded-pill">3</span>
+              </div>
+              <i class="bi bi-database display-6 text-danger"></i>
+              <h6 class="mt-1 mb-0" style="font-size: 0.85em;">ElastiCache</h6>
+              <small class="text-muted d-block" style="font-size: 0.7em;">Decline Rates</small>
+              <hr class="my-1">
+              <small class="text-success" style="font-size: 0.7em;">
+                <i class="bi bi-clock"></i> <%= debug[:timings][:decline_rates_ms] %>ms
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4: SageMaker Feature Store -->
+        <div class="col">
+          <div class="card h-100" style="border-color: #7b42bc;">
+            <div class="card-body text-center p-2">
+              <div class="mb-1">
+                <span class="badge rounded-pill" style="background-color: #7b42bc;">4</span>
+              </div>
+              <i class="bi bi-box display-6" style="color: #7b42bc;"></i>
+              <h6 class="mt-1 mb-0" style="font-size: 0.85em;">Feature Store</h6>
+              <small class="text-muted d-block" style="font-size: 0.7em;">ML Features</small>
+              <hr class="my-1">
+              <small class="text-success" style="font-size: 0.7em;">
+                <i class="bi bi-check-circle"></i> 19 features
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 5: SageMaker Endpoint -->
+        <div class="col">
+          <div class="card h-100 border-success">
+            <div class="card-body text-center p-2">
+              <div class="mb-1">
+                <span class="badge bg-success rounded-pill">5</span>
+              </div>
+              <i class="bi bi-cpu display-6 text-success"></i>
+              <h6 class="mt-1 mb-0" style="font-size: 0.85em;">SageMaker</h6>
+              <small class="text-muted d-block" style="font-size: 0.7em;">XGBoost</small>
+              <hr class="my-1">
+              <small class="text-success" style="font-size: 0.7em;">
+                <i class="bi bi-clock"></i> <%= debug[:timings][:sagemaker_ms] %>ms
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 6: Response -->
+        <div class="col">
+          <div class="card h-100 border-info">
+            <div class="card-body text-center p-2">
+              <div class="mb-1">
+                <span class="badge bg-info rounded-pill">6</span>
+              </div>
+              <i class="bi bi-graph-up display-6 text-info"></i>
+              <h6 class="mt-1 mb-0" style="font-size: 0.85em;">Response</h6>
+              <small class="text-muted d-block" style="font-size: 0.7em;"><%= (result[:score] * 100).round(1) %>%</small>
+              <hr class="my-1">
+              <span class="badge bg-<%= result[:risk_level] == 'low' ? 'success' : result[:risk_level] == 'medium' ? 'warning' : 'danger' %>" style="font-size: 0.65em;">
+                <%= result[:risk_level]&.capitalize %>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Decline Rates Detail (Collapsible) -->
+      <div class="mt-3">
+        <button class="btn btn-sm btn-outline-secondary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#declineRatesDetail">
+          <i class="bi bi-code-slash me-1"></i>
+          Show Computed Decline Rates
+          <i class="bi bi-chevron-down ms-1"></i>
+        </button>
+        <div class="collapse mt-2" id="declineRatesDetail">
+          <div class="bg-dark text-light p-3 rounded" style="font-family: monospace; font-size: 0.85em;">
+            <div class="row">
+              <% debug[:decline_rates]&.each do |key, value| %>
+                <div class="col-md-6 col-lg-4 mb-1">
+                  <span class="text-info"><%= key %>:</span>
+                  <span class="text-warning"><%= value.round(4) %></span>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Service Status Badges -->
+      <div class="mt-3 pt-3 border-top">
+        <div class="d-flex flex-wrap gap-2 justify-content-center">
+          <span class="badge bg-light text-dark border">
+            <i class="bi bi-cloud text-warning me-1"></i>
+            App Runner
+            <i class="bi bi-check-circle text-success ms-1"></i>
+          </span>
+          <span class="badge bg-light text-dark border">
+            <i class="bi bi-server text-primary me-1"></i>
+            RDS PostgreSQL
+            <i class="bi bi-check-circle text-success ms-1"></i>
+          </span>
+          <span class="badge bg-light text-dark border">
+            <i class="bi bi-database text-danger me-1"></i>
+            ElastiCache
+            <i class="bi bi-check-circle text-success ms-1"></i>
+          </span>
+          <span class="badge bg-light text-dark border">
+            <i class="bi bi-box me-1" style="color: #7b42bc;"></i>
+            Feature Store
+            <i class="bi bi-check-circle text-success ms-1"></i>
+          </span>
+          <span class="badge bg-light text-dark border">
+            <i class="bi bi-cpu text-success me-1"></i>
+            SageMaker
+            <i class="bi bi-check-circle text-success ms-1"></i>
+          </span>
+        </div>
+      </div>
+
+    <% else %>
+      <!-- Result without debug info -->
+      <div class="text-center text-muted py-3">
+        <i class="bi bi-info-circle me-2"></i>
+        Debug information not available
+      </div>
+    <% end %>
+  </div>
+</div>

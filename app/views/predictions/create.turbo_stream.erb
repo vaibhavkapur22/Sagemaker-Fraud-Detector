@@ -1,0 +1,13 @@
+<%= turbo_stream.replace "prediction_result" do %>
+  <%= render "result", result: @result %>
+<% end %>
+
+<%= turbo_stream.replace "service_flow" do %>
+  <%= render "service_flow", result: @result %>
+<% end %>
+
+<% if @prediction.errors.any? %>
+  <%= turbo_stream.replace "fraud_prediction_form" do %>
+    <%= render "form", prediction: @prediction %>
+  <% end %>
+<% end %>

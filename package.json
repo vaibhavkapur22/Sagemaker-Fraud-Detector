@@ -1,0 +1,7 @@
+{
+  "name": "fraud_detector",
+  "private": true,
+  "scripts": {
+    "build:css": "cp ./app/assets/stylesheets/application.css ./app/assets/builds/application.css"
+  }
+}

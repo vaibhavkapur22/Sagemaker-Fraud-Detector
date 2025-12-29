@@ -1,0 +1,92 @@
+<%= form_with model: prediction, url: predictions_path, data: { turbo_frame: "prediction_result" } do |f| %>
+  <% if prediction.errors.any? %>
+    <div class="alert alert-danger">
+      <h6 class="alert-heading">Please fix the following errors:</h6>
+      <ul class="mb-0">
+        <% prediction.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="row g-3">
+    <!-- Country -->
+    <div class="col-md-6">
+      <label for="fraud_prediction_country" class="form-label">
+        <i class="bi bi-globe me-1"></i>
+        Country
+      </label>
+      <%= f.select :country,
+                   FraudPrediction::COUNTRIES,
+                   { prompt: "Select country...", selected: prediction.country },
+                   class: "form-select #{'is-invalid' if prediction.errors[:country].any?}" %>
+    </div>
+
+    <!-- Bank -->
+    <div class="col-md-6">
+      <label for="fraud_prediction_bank" class="form-label">
+        <i class="bi bi-bank me-1"></i>
+        Bank
+      </label>
+      <%= f.select :bank,
+                   FraudPrediction::BANKS,
+                   { prompt: "Select bank...", selected: prediction.bank },
+                   class: "form-select #{'is-invalid' if prediction.errors[:bank].any?}" %>
+    </div>
+
+    <!-- BIN -->
+    <div class="col-md-6">
+      <label for="fraud_prediction_bin" class="form-label">
+        <i class="bi bi-credit-card me-1"></i>
+        BIN (First 6 digits)
+      </label>
+      <%= f.text_field :bin,
+                       class: "form-control #{'is-invalid' if prediction.errors[:bin].any?}",
+                       placeholder: "e.g., 411111",
+                       maxlength: 6,
+                       pattern: "[0-9]{6}" %>
+      <div class="form-text">First 6 digits of the card number</div>
+    </div>
+
+    <!-- SDK Type -->
+    <div class="col-md-6">
+      <label for="fraud_prediction_sdk_type" class="form-label">
+        <i class="bi bi-phone me-1"></i>
+        SDK Type
+      </label>
+      <%= f.select :sdk_type,
+                   FraudPrediction::SDK_TYPES,
+                   { prompt: "Select SDK type...", selected: prediction.sdk_type },
+                   class: "form-select #{'is-invalid' if prediction.errors[:sdk_type].any?}" %>
+    </div>
+
+    <!-- IP Address -->
+    <div class="col-md-6">
+      <label for="fraud_prediction_ip_address" class="form-label">
+        <i class="bi bi-ethernet me-1"></i>
+        IP Address
+      </label>
+      <%= f.text_field :ip_address,
+                       class: "form-control #{'is-invalid' if prediction.errors[:ip_address].any?}",
+                       placeholder: "e.g., 192.168.1.1" %>
+    </div>
+
+    <!-- Card Network -->
+    <div class="col-md-6">
+      <label for="fraud_prediction_card_network" class="form-label">
+        <i class="bi bi-credit-card-2-front me-1"></i>
+        Card Network
+      </label>
+      <%= f.select :card_network,
+                   FraudPrediction::CARD_NETWORKS,
+                   { prompt: "Select card network...", selected: prediction.card_network },
+                   class: "form-select #{'is-invalid' if prediction.errors[:card_network].any?}" %>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="col-12 mt-4">
+      <%= f.submit "Calculate Risk Score", class: "btn btn-primary btn-lg w-100", data: { turbo_submits_with: "Calculating..." } %>
+    </div>
+  </div>
+<% end %>
